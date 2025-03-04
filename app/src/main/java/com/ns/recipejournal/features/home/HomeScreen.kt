@@ -13,10 +13,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ns.recipejournal.features.home.components.ChipFilter
 import com.ns.recipejournal.features.home.components.RecipeCard
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
-    val vm = HomeViewModel()
+
+    val vm = koinViewModel<HomeViewModel>()
     val state by vm.state.collectAsStateWithLifecycle()
 
     HomeScreenContent(

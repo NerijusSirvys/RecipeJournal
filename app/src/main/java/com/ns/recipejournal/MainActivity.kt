@@ -29,9 +29,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = { BottomNavigationBar(navController) }
                 ) { innerPadding ->
-                    Box(modifier = Modifier
-                        .padding(innerPadding)
-                        .padding(horizontal = 15.dp)) {
+                    Box(
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .padding(horizontal = 15.dp)
+                    ) {
                         NavHost(navController = navController, startDestination = Routes.Home) {
                             composable<Routes.Create> {}
                             composable<Routes.Home> { HomeScreen() }
