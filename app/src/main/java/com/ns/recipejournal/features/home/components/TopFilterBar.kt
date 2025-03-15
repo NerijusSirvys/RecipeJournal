@@ -7,6 +7,8 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +35,9 @@ fun TopFilterBar(
             Icon(
                 imageVector = if (showFavourites) Icons.Default.Favorite
                 else Icons.Outlined.FavoriteBorder,
-                contentDescription = null
+                contentDescription = null,
+                tint = if (showFavourites) MaterialTheme.colorScheme.primary
+                else IconButtonDefaults.iconButtonColors().contentColor
             )
         }
     }

@@ -1,10 +1,11 @@
-package com.ns.recipejournal.features.home.components
+package com.ns.recipejournal.features.home.components.chipFilter
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,14 +32,13 @@ fun ChipFilter(
                     selected = it.enabled,
                     onClick = { onClick(it.id) },
                     label = { Text(text = it.text) },
+                    colors = FilterChipDefaults.filterChipColors().copy(
+                        selectedContainerColor = MaterialTheme.colorScheme.primary,
+                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                    )
                 )
             }
         }
     }
 }
 
-data class ChipFilterOption(
-    val id: String,
-    val enabled: Boolean,
-    val text: String
-)

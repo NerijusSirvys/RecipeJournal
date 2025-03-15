@@ -1,6 +1,8 @@
 package com.ns.recipejournal.navigation
 
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
@@ -30,10 +32,24 @@ fun BottomNavigationBar(navController: NavController) {
             val isSelected =
                 currentDestination?.hierarchy?.any { it.route == navItem.route::class.qualifiedName } == true
 
+            val color = if (isSelected) MaterialTheme.colorScheme.primary
+            else IconButtonDefaults.iconButtonColors().contentColor
+
             NavigationBarItem(
-                label = { Text(text = navItem.name) },
-                icon = { Icon(painter = painterResource(navItem.icon), contentDescription = null) },
-                selected = isSelected,
+                label = {
+                    Text(
+                        text = navItem.name,
+                        color = color
+                    )
+                },
+                icon = {
+                    Icon(
+                        painter = painterResource(navItem.icon),
+                        contentDescription = null,
+                        tint = color
+                    )
+                },
+                selected = false,
                 onClick = {
                     navController.navigate(navItem.route) {
                         popUpTo(navController.graph.findStartDestination().id) {

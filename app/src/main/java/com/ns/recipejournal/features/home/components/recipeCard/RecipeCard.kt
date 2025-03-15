@@ -1,4 +1,4 @@
-package com.ns.recipejournal.features.home.components
+package com.ns.recipejournal.features.home.components.recipeCard
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
@@ -27,6 +27,10 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ns.recipejournal.R
+import com.ns.recipejournal.features.home.components.CardChip
+import com.ns.recipejournal.features.home.components.FavouriteIndicator
+import com.ns.recipejournal.features.home.components.InfoTag
+import com.ns.recipejournal.features.home.components.RecipeOverview
 import com.ns.recipejournal.ui.theme.RecipeJournalTheme
 
 @Composable
@@ -55,10 +59,10 @@ fun RecipeCard(
                         .height(IntrinsicSize.Min)
                         .padding(7.dp, 7.dp)
                 ) {
-                    TopRow(
-                        cuisine = details.cuisine,
-                        category = details.category
-                    )
+                    TopRow {
+                        CardChip(text = details.cuisine)
+                        CardChip(text = details.category)
+                    }
                     Column(
                         verticalArrangement = Arrangement.spacedBy(13.dp),
                         modifier = Modifier.fillMaxHeight()
@@ -69,7 +73,11 @@ fun RecipeCard(
                             overflow = TextOverflow.Ellipsis,
                             softWrap = false
                         )
-                        BottomRow(details.cookTime, details.calories, details.servings)
+                        BottomRow {
+                            InfoTag(iconId = R.drawable.time_outline, text = "${details.cookTime} min")
+                            InfoTag(iconId = R.drawable.fire_outline, text = "${details.calories} kcal")
+                            InfoTag(iconId = R.drawable.food, text = "${details.servings} servings")
+                        }
                     }
                 }
             }
@@ -77,33 +85,6 @@ fun RecipeCard(
     }
 }
 
-@Composable
-fun BottomRow(time: Int, calories: Int, servings: Int) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(end = 20.dp)
-    ) {
-        InfoTag(iconId = R.drawable.time_outline, text = "$time min")
-        InfoTag(iconId = R.drawable.fire_outline, text = "$calories kcal")
-        InfoTag(iconId = R.drawable.food, text = "$servings servings")
-    }
-}
-
-@Composable
-private fun TopRow(
-    cuisine: String,
-    category: String,
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(7.dp)
-    ) {
-        CardChip(text = cuisine)
-        CardChip(text = category)
-    }
-}
 
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,

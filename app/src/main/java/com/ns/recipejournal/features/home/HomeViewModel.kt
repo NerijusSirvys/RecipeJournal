@@ -2,16 +2,21 @@ package com.ns.recipejournal.features.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ns.recipejournal.features.home.components.ChipFilterOption
 import com.ns.recipejournal.features.home.components.RecipeOverview
+import com.ns.recipejournal.features.home.components.chipFilter.ChipFilterOption
 import com.ns.recipejournal.features.home.data.FilterType
+import com.ns.recipejournal.services.RecipeService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(
+    private val recipeService: RecipeService
+) : ViewModel() {
 
     private val _recipes = MutableStateFlow(listOf<RecipeOverview>())
     private val _searchQuery = MutableStateFlow("")
@@ -20,92 +25,42 @@ class HomeViewModel : ViewModel() {
 
     private val _state = MutableStateFlow(HomeState())
     val state = combine(_recipes, _searchQuery, _cuisineFilter, _categoryFilter, _state) { recipes, searchQuery, cuisineFilter, categoryFilter, state ->
-
-        var filtered = recipes.filter { it.name.contains(searchQuery) }
-        if (state.showFavourites)
-            filtered = filtered.filter { it.isFavourite }
-
-        if (cuisineFilter.any { it.enabled }) {
-            val enabled = cuisineFilter.filter { it.enabled }
-            filtered = filtered.filter { recipe -> enabled.any { it.id == recipe.cuisine } }
-        }
-
-        if (categoryFilter.any { it.enabled }) {
-            val enabled = categoryFilter.filter { it.enabled }
-            filtered = filtered.filter { recipe -> enabled.any { it.id == recipe.category } }
-        }
-
         state.copy(
             searchQuery = searchQuery,
-            recipes = filtered,
+            recipes = recipeService.filterRecipes(recipes, searchQuery, cuisineFilter, categoryFilter, state.showFavourites),
             cuisines = cuisineFilter,
             categories = categoryFilter
         )
+    }.onStart {
+        _state.update {
+            it.copy(isLoading = true)
+        }
+
+        loadData()
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HomeState())
 
-    init {
-        _recipes.update {
-            listOf(
-                RecipeOverview(
-                    id = "1",
-                    name = "Recipe 1",
-                    calories = 150,
-                    category = "cat1",
-                    cookTime = 15,
-                    servings = 3,
-                    cuisine = "cus1",
-                    isFavourite = false
-                ),
-                RecipeOverview(
-                    id = "2",
-                    name = "Recipe 2",
-                    calories = 150,
-                    category = "cat1",
-                    cookTime = 15,
-                    servings = 3,
-                    cuisine = "cus1",
-                    isFavourite = true
-                ),
-                RecipeOverview(
-                    id = "3",
-                    name = "Recipe 3",
-                    calories = 150,
-                    category = "cat2",
-                    cookTime = 15,
-                    servings = 3,
-                    cuisine = "cus3",
-                    isFavourite = true
-                ),
-                RecipeOverview(
-                    id = "4",
-                    name = "Recipe 4",
-                    calories = 150,
-                    category = "cat3",
-                    cookTime = 15,
-                    servings = 3,
-                    cuisine = "cus4",
-                    isFavourite = false
-                )
-            )
-        }
+    private fun loadData() {
 
-        _categoryFilter.update {
-            listOf(
-                ChipFilterOption("cat1", false, "Breakfast"),
-                ChipFilterOption("cat2", false, "Lunch"),
-                ChipFilterOption("cat3", false, "Dinner"),
-                ChipFilterOption("cat4", false, "Snack"),
-            )
-        }
+        viewModelScope.launch {
+            val recipes = recipeService.getRecipes()
+            val categories = recipeService.getMealCategories()
+            val cuisines = recipeService.getCuisines()
 
-        _cuisineFilter.update {
-            listOf(
-                ChipFilterOption("cus1", false, "American"),
-                ChipFilterOption("cus2", false, "Mexican"),
-                ChipFilterOption("cus3", false, "Chinese"),
-                ChipFilterOption("cus4", false, "Italian"),
-                ChipFilterOption("cus5", false, "Lithuanian"),
-            )
+            combine(recipes, categories, cuisines) { r, ca, cu ->
+                Triple(r, ca, cu)
+            }.collect { (r, ca, cu) ->
+                _recipes.update { r }
+
+                _categoryFilter.update {
+                    ca.map { ChipFilterOption(it.id, false, it.name) }
+                }
+
+                _cuisineFilter.update {
+                    cu.map { ChipFilterOption(it.id, false, it.name) }
+                }
+
+                _state.update { it.copy(isLoading = false) }
+            }
         }
     }
 
@@ -122,7 +77,6 @@ class HomeViewModel : ViewModel() {
     }
 
     private fun toggleFilter(filterId: String, filterType: FilterType) {
-
         when (filterType) {
             FilterType.CUISINE -> {
                 _cuisineFilter.update {
@@ -154,7 +108,6 @@ class HomeViewModel : ViewModel() {
                 }
             }
         }
-
     }
 
     private fun toggleFavourite() {
