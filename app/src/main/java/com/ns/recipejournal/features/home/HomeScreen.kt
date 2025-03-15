@@ -13,6 +13,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ns.recipejournal.features.home.components.ChipFilter
 import com.ns.recipejournal.features.home.components.RecipeCard
+import com.ns.recipejournal.features.home.components.TopFilterBar
+import com.ns.recipejournal.features.home.data.FilterType
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -35,16 +37,24 @@ fun HomeScreenContent(
     onAction: (HomeScreenAction) -> Unit
 ) {
     Column {
+        TopFilterBar(
+            searchQuery = state.searchQuery,
+            showFavourites = state.showFavourites,
+            onQueryChange = { onAction(HomeScreenAction.UpdateSearch(it)) },
+            onFavouriteToggle = { onAction(HomeScreenAction.ToggleFavourites) }
+        )
+
+        Spacer(Modifier.height(25.dp))
         ChipFilter(
             name = "Meal Category",
             options = state.categories,
-            onClick = {}
+            onClick = { onAction(HomeScreenAction.ToggleFilterOption(it, FilterType.CATEGORY)) }
         )
         Spacer(Modifier.height(10.dp))
         ChipFilter(
             name = "Cuisines",
             options = state.cuisines,
-            onClick = {}
+            onClick = { onAction(HomeScreenAction.ToggleFilterOption(it, FilterType.CUISINE)) }
         )
         Spacer(Modifier.height(25.dp))
 
@@ -52,10 +62,7 @@ fun HomeScreenContent(
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(state.recipes, key = { it.id }) {
-                RecipeCard(
-                    details = it,
-                    onToggleFavourite = { onAction(HomeScreenAction.ToggleFavourite(it.id)) }
-                )
+                RecipeCard(details = it)
             }
         }
     }

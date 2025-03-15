@@ -4,10 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.ElevatedFilterChip
-import androidx.compose.material3.Icon
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,14 +27,10 @@ fun ChipFilter(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(options, key = { it.id }) {
-                ElevatedFilterChip(
+                FilterChip(
                     selected = it.enabled,
                     onClick = { onClick(it.id) },
                     label = { Text(text = it.text) },
-                    leadingIcon = {
-                        if (it.enabled)
-                            Icon(imageVector = Icons.Default.Check, contentDescription = null)
-                    }
                 )
             }
         }

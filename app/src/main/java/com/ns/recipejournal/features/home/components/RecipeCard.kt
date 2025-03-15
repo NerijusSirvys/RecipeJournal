@@ -2,8 +2,8 @@ package com.ns.recipejournal.features.home.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -11,22 +11,18 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,36 +32,45 @@ import com.ns.recipejournal.ui.theme.RecipeJournalTheme
 @Composable
 fun RecipeCard(
     modifier: Modifier = Modifier,
-    onToggleFavourite: () -> Unit,
     details: RecipeOverview
 ) {
     Card(
         modifier = modifier.heightIn(max = 100.dp)
     ) {
-        Row {
-            Image(
-                bitmap = ImageBitmap.imageResource(R.drawable.food_image),
-                contentDescription = null,
-                modifier = Modifier.weight(1f),
-                contentScale = ContentScale.FillBounds,
-            )
-            Column(
-                modifier = Modifier
-                    .weight(3.5f)
-                    .height(IntrinsicSize.Min)
-                    .padding(7.dp, 7.dp)
-            ) {
-                TopRow(
-                    cuisine = details.cuisine,
-                    favourite = details.isFavourite,
-                    onToggleFavourite = onToggleFavourite
+        Box(
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            FavouriteIndicator(isFavourite = details.isFavourite)
+            Row {
+                Image(
+                    bitmap = ImageBitmap.imageResource(R.drawable.food_image),
+                    contentDescription = null,
+                    modifier = Modifier.weight(1f),
+                    contentScale = ContentScale.FillBounds,
                 )
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(13.dp),
-                    modifier = Modifier.fillMaxHeight()
+                    verticalArrangement = Arrangement.spacedBy(5.dp),
+                    modifier = Modifier
+                        .weight(3.5f)
+                        .height(IntrinsicSize.Min)
+                        .padding(7.dp, 7.dp)
                 ) {
-                    Text(text = details.name, style = MaterialTheme.typography.titleLarge)
-                    BottomRow(details.cookTime, details.calories, details.servings)
+                    TopRow(
+                        cuisine = details.cuisine,
+                        category = details.category
+                    )
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(13.dp),
+                        modifier = Modifier.fillMaxHeight()
+                    ) {
+                        Text(
+                            text = details.name,
+                            style = MaterialTheme.typography.titleMedium,
+                            overflow = TextOverflow.Ellipsis,
+                            softWrap = false
+                        )
+                        BottomRow(details.cookTime, details.calories, details.servings)
+                    }
                 }
             }
         }
@@ -80,7 +85,6 @@ fun BottomRow(time: Int, calories: Int, servings: Int) {
             .fillMaxWidth()
             .padding(end = 20.dp)
     ) {
-
         InfoTag(iconId = R.drawable.time_outline, text = "$time min")
         InfoTag(iconId = R.drawable.fire_outline, text = "$calories kcal")
         InfoTag(iconId = R.drawable.food, text = "$servings servings")
@@ -89,40 +93,15 @@ fun BottomRow(time: Int, calories: Int, servings: Int) {
 
 @Composable
 private fun TopRow(
-    onToggleFavourite: () -> Unit,
     cuisine: String,
-    favourite: Boolean
+    category: String,
 ) {
     Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.fillMaxWidth()
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(7.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.maximise),
-                contentDescription = null,
-                modifier = Modifier
-                    .rotate(90f)
-                    .size(20.dp)
-                    .offset(y = 15.dp)
-            )
-
-            Text(
-                text = cuisine,
-                style = MaterialTheme.typography.labelMedium,
-                modifier = Modifier.offset(x = -15.dp)
-            )
-        }
-
-        Icon(
-            modifier = Modifier.clickable(onClick = onToggleFavourite),
-            painter = painterResource(R.drawable.add_outline),
-            contentDescription = null,
-            tint = if (favourite) MaterialTheme.colorScheme.primary
-            else MaterialTheme.colorScheme.onBackground
-        )
+        CardChip(text = cuisine)
+        CardChip(text = category)
     }
 }
 
@@ -150,7 +129,7 @@ private fun Preview() {
             color = MaterialTheme.colorScheme.background,
             modifier = Modifier.fillMaxWidth()
         ) {
-            RecipeCard(details = details, onToggleFavourite = {})
+            RecipeCard(details = details)
         }
     }
 }
