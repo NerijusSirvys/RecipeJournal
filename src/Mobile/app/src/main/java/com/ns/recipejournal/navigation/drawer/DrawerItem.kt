@@ -22,7 +22,7 @@ fun DrawerItem(
       onClick = onClick,
       selected = false,
       icon = {
-         Icon(painter = painterResource(iconId), contentDescription = ContentDescriptionConstants.MANU_ICON)
+         Icon(painter = painterResource(iconId), contentDescription = ContentDescriptionConstants.MENU_ICON)
       }
    )
 }

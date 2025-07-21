@@ -8,6 +8,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.CoroutineScope
@@ -22,6 +23,7 @@ fun TopBar(
    drawerState: DrawerState
 ) {
    TopAppBar(
+      colors = TopAppBarDefaults.topAppBarColors(),
       modifier = modifier,
       title = { Text(text = screenName) },
       navigationIcon = {

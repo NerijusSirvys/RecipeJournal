@@ -18,9 +18,7 @@ import com.ns.recipejournal.features.createNew.screens.steps.StepsScreen
 
 @Composable
 fun CreateNewRecipe(modifier: Modifier = Modifier) {
-
    val navController = rememberNavController()
-
 
    Scaffold(
       bottomBar = {

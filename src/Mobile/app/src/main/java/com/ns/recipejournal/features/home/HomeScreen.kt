@@ -14,7 +14,8 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 
    Box(
       modifier = modifier
-         .fillMaxSize(), contentAlignment = Alignment.Center
+         .fillMaxSize(),
+      contentAlignment = Alignment.Center
    ) {
       Text(text = "Home Screen")
    }
