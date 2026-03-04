@@ -52,6 +52,12 @@ dependencies {
     implementation(libs.androidx.navigation)
     implementation(libs.kotlinx.serialization)
 
+    // DEPENDENCY INJECTION
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.compose)
+    implementation(libs.koin.compose.viewmodel)
+    implementation(libs.koin.android)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
