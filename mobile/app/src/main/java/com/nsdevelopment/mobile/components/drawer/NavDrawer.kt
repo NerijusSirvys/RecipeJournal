@@ -8,8 +8,8 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.nsdevelopment.mobile.Destination
 import com.nsdevelopment.mobile.R
+import com.nsdevelopment.mobile.navigation.Destination
 import com.nsdevelopment.mobile.ui.theme.ApplicationTheme
 import com.nsdevelopment.mobile.utilities.SystemPreviews
 
@@ -54,7 +54,7 @@ fun NavDrawer(
 @Composable
 private fun Preview() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Open)
-    ApplicationTheme() {
+    ApplicationTheme {
         NavDrawer(
             drawerState = drawerState,
             onClick = {},
