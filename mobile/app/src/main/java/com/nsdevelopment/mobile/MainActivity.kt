@@ -14,15 +14,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.nsdevelopment.mobile.components.ScreenTopBar
 import com.nsdevelopment.mobile.components.drawer.NavDrawer
+import com.nsdevelopment.mobile.navigation.Destination
+import com.nsdevelopment.mobile.screens.home.HomeScreen
 import com.nsdevelopment.mobile.ui.theme.ApplicationTheme
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(
@@ -48,7 +50,6 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-
                 NavDrawer(
                     drawerState = drawerState,
                     onClick = { item ->
@@ -72,28 +73,17 @@ class MainActivity : ComponentActivity() {
                         NavHost(
                             navController = navController,
                             startDestination = Destination.Home,
-                            modifier = Modifier.padding(innerPadding)
+                            modifier = Modifier
+                                .padding(innerPadding)
+                                .padding(horizontal = 25.dp)
                         ) {
-                            composable<Destination.Home>() { Text("Home") }
-                            composable<Destination.AddRecipe>() { Text("Add Recipe") }
-                            composable<Destination.ImportRecipe>() { Text("Import Recipe") }
+                            composable<Destination.Home> { HomeScreen() }
+                            composable<Destination.AddRecipe> { Text("Add Recipe") }
+                            composable<Destination.ImportRecipe> { Text("Import Recipe") }
                         }
                     }
                 }
             }
         }
     }
-}
-
-
-sealed interface Destination {
-
-    @Serializable
-    data object ImportRecipe : Destination
-
-    @Serializable
-    data object AddRecipe : Destination
-
-    @Serializable
-    data object Home : Destination
 }

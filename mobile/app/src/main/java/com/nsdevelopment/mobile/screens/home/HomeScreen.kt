@@ -1,0 +1,20 @@
+package com.nsdevelopment.mobile.screens.home
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.compose.viewmodel.koinViewModel
+
+@Composable
+fun HomeScreen(modifier: Modifier = Modifier) {
+
+    val vm = koinViewModel<HomeScreenViewmodel>()
+    val state by vm.state.collectAsStateWithLifecycle()
+
+    HomeScreenContent(
+        modifier = modifier,
+        state = state,
+        actions = vm::onAction
+    )
+}

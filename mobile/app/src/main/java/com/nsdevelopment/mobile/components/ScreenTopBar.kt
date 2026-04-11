@@ -36,7 +36,7 @@ fun ScreenTopBar(
 @SystemPreviews
 @Composable
 private fun Preview() {
-    ApplicationTheme() {
+    ApplicationTheme {
         Scaffold(
             topBar = {
                 ScreenTopBar(
